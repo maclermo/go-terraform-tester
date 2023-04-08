@@ -1,0 +1,37 @@
+---
+tests:
+  - name: ec2
+    description: This tests ec2 instance creation
+    config:
+      type: terraform
+      parameters:
+        location: tf
+        backendConfig: tf/backend.tf
+        inputVariables: tf/input.tfvars
+    steps:
+      - test: ShellRunCommand
+        options:
+          command: "sleep 1"
+          inline: false
+          shell: bash
+      - test: TfOutputAssertEquals
+        options:
+          field: hello
+          equals: world
+      - test: TfOutputAssertEquals
+        options:
+          field: secret
+          equals: super-secret!
+          sensitive: true
+      - test: TfOutputAssertGreaterThan
+        options:
+          field: stars
+          greaterThan: 600.23
+      - test: TfOutputAssertLessThan
+        options:
+          field: cars
+          lessThan: 1000
+      - test: TfOutputAssertType
+        options:
+          field: happy
+          type: bool
